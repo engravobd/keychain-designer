@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f5f6f8">
+<title>Keychain Studio — Laser SVG Designer</title>
+<style>
+:root{--bg:#f3f5f8;--panel:#fff;--ink:#202633;--muted:#667085;--line:#dfe4eb;--accent:#2563eb;--accent2:#eaf1ff;--danger:#b42318}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{background:#fff;border-bottom:1px solid var(--line);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:5}
+.brand{font-weight:800;font-size:18px;letter-spacing:-.3px}.brand small{display:block;color:var(--muted);font-size:11px;font-weight:500;letter-spacing:.2px}
+button,.button{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:9px;padding:9px 12px;font:inherit;font-weight:650;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+button.primary{background:var(--accent);border-color:var(--accent);color:white}button.danger{color:var(--danger)}button:disabled{opacity:.45;cursor:not-allowed}
+.actions{display:flex;flex-wrap:wrap;gap:7px}.layout{max-width:1440px;margin:0 auto;padding:16px;display:grid;grid-template-columns:minmax(280px,350px) minmax(0,1fr);gap:16px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden}.panel h2{font-size:15px;margin:0;padding:13px 15px;border-bottom:1px solid var(--line)}.section{padding:13px 15px;border-bottom:1px solid #edf0f4}.section:last-child{border-bottom:0}
+label{display:block;font-size:12px;color:#475467;font-weight:700;margin-bottom:5px}input,select,textarea{width:100%;border:1px solid #cfd6e0;border-radius:8px;padding:9px 10px;font:inherit;background:#fff;color:var(--ink);min-width:0}
+input[type=checkbox]{width:auto}input[type=color]{height:40px;padding:3px}input[type=range]{padding:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{margin-bottom:11px}.field:last-child{margin-bottom:0}.hint{font-size:12px;color:var(--muted);margin:6px 0 0}.row{display:flex;align-items:center;gap:8px}.row>*{flex:1}.row .fit{flex:0 0 auto}
+.preview-panel{display:flex;flex-direction:column;min-width:0}.preview-top{display:flex;justify-content:space-between;align-items:center;padding:12px 15px;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line)}.preview-top strong{font-size:15px}.canvas-wrap{padding:12px;background:#f9fafb;min-height:340px;display:flex;align-items:center;justify-content:center;overflow:auto}
+#canvas{display:block;width:100%;max-width:850px;height:auto;background:white;border:1px solid #dfe4eb;border-radius:8px;touch-action:manipulation}
+.sheet-list{padding:12px 15px;display:flex;flex-wrap:wrap;gap:8px}.chip{border:1px solid var(--line);border-radius:9px;padding:8px 10px;background:#fff;display:flex;gap:8px;align-items:center}.chip.active{border-color:var(--accent);background:var(--accent2)}.chip button{padding:3px 7px}
+.status{padding:10px 15px;color:var(--muted);font-size:12px;border-top:1px solid var(--line)}.status.error{color:var(--danger)}.mobile-tabs{display:none}.small{font-size:12px;color:var(--muted)}.inline-check{display:flex;align-items:center;gap:8px}.inline-check label{margin:0}
+@media(max-width:820px){header{padding:11px 12px;align-items:flex-start}.brand{font-size:16px}.layout{grid-template-columns:1fr;padding:10px;gap:10px}.canvas-wrap{min-height:240px;padding:8px}.actions button{padding:8px 9px;font-size:13px}.panel h2{padding:11px 13px}.section{padding:12px 13px}}
+@media(max-width:420px){.layout{padding:7px}.grid2{gap:8px}.actions{gap:5px}.actions button{font-size:12px;padding:7px 8px}.preview-top{padding:10px}.brand small{font-size:10px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">✦ Keychain Studio <small>LASER SVG DESIGNER · BROWSER-BASED</small></div>
+  <div class="actions">
+    <button id="newBtn">＋ New</button>
+    <button id="saveBtn">Save</button>
+    <button id="openBtn">Open</button>
+    <button class="primary" id="exportBtn">Export SVG</button>
+  </div>
+</header>
+<main class="layout">
+  <section class="panel">
+    <h2>Design settings</h2>
+    <div class="section">
+      <div class="grid2">
+        <div class="field"><label for="width">Width (mm)</label><input id="width" type="number" min="10" max="300" step="0.5" value="45"></div>
+        <div class="field"><label for="height">Height (mm)</label><input id="height" type="number" min="10" max="300" step="0.5" value="30"></div>
+        <div class="field"><label for="radius">Corner radius (mm)</label><input id="radius" type="number" min="0" max="30" step="0.5" value="5"></div>
+        <div class="field"><label for="thickness">Stock thickness (mm)</label><input id="thickness" type="number" min="0" max="20" step="0.1" value="1"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="holeDia">Chain hole Ø (mm)</label><input id="holeDia" type="number" min="0" max="15" step="0.2" value="4"></div>
+        <div class="field"><label for="holeOffset">Hole center from left (mm)</label><input id="holeOffset" type="number" min="0" max="25" step="0.5" value="6"></div>
+      </div>
+      <div class="inline-check"><input id="showDimensions" type="checkbox" checked><label for="showDimensions">Show dimensions on preview (not exported)</label></div>
+      <p class="hint">Dimensions are in millimetres. The hole position is measured from the left edge, at the vertical center.</p>
+    </div>
+    <div class="section">
+      <div class="field"><label for="textValue">Engraving text</label><textarea id="textValue" rows="2" placeholder="Type a name">Your Name</textarea></div>
+      <div class="grid2">
+        <div class="field"><label for="font">Font family</label><select id="font"><option value="Arial, sans-serif">Arial / Sans</option><option value="Georgia, serif">Georgia / Serif</option><option value="cursive">Cursive</option><option value="monospace">Monospace</option><option value="Trebuchet MS, sans-serif">Trebuchet</option><option value="Impact, sans-serif">Impact</option></select></div>
+        <div class="field"><label for="fontSize">Font size (mm)</label><input id="fontSize" type="number" min="1" max="25" step="0.5" value="6"></div>
+        <div class="field"><label for="textX">Text center X (mm)</label><input id="textX" type="number" min="0" max="45" step="0.5" value="25"></div>
+        <div class="field"><label for="textY">Text baseline Y (mm)</label><input id="textY" type="number" min="0" max="30" step="0.5" value="18"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="letterSpacing">Letter spacing (mm)</label><input id="letterSpacing" type="number" min="-1" max="3" step="0.1" value="0"></div>
+        <div class="field"><label for="textRotate">Text rotation (°)</label><input id="textRotate" type="number" min="-180" max="180" step="1" value="0"></div>
+      </div>
+      <div class="inline-check"><input id="bold" type="checkbox"><label for="bold">Bold text</label></div>
+    </div>
+    <div class="section">
+      <div class="field"><label for="logoFile">Add logo or image</label><input id="logoFile" type="file" accept="image/*,.svg"></div>
+      <div class="grid2">
+        <div class="field"><label for="logoWidth">Logo width (mm)</label><input id="logoWidth" type="number" min="1" max="40" step="0.5" value="10"></div>
+        <div class="field"><label for="logoY">Logo center Y (mm)</label><input id="logoY" type="number" min="0" max="30" step="0.5" value="9"></div>
+      </div>
+      <div class="row"><button id="removeLogoBtn">Remove logo</button><span id="logoStatus" class="small">No image loaded</span></div>
+      <p class="hint">For the cleanest laser results, use a simple, high-contrast SVG or PNG. Raster images are embedded in the exported SVG.</p>
+    </div>
+    <div class="section">
+      <label>Multiple keychains on a sheet</label>
+      <div class="grid2">
+        <div class="field"><label for="columns">Columns</label><input id="columns" type="number" min="1" max="12" value="3"></div>
+        <div class="field"><label for="rows">Rows</label><input id="rows" type="number" min="1" max="12" value="3"></div>
+        <div class="field"><label for="gap">Gap (mm)</label><input id="gap" type="number" min="0" max="30" step="0.5" value="3"></div>
+        <div class="field"><label for="sheetMode">Sheet output</label><select id="sheetMode"><option value="individual">Repeated design</option><option value="numbered">Add sequential numbers</option></select></div>
+      </div>
+      <button class="primary" id="sheetBtn">Create sheet preview</button>
+      <p class="hint">Export creates one SVG sheet with repeated designs. Check that the sheet fits your material and machine bed.</p>
+    </div>
+  </section>
+  <section class="panel preview-panel">
+    <div class="preview-top"><strong>Live preview</strong><span id="previewInfo" class="small">45 × 30 mm · 1 piece</span></div>
+    <div class="canvas-wrap"><canvas id="canvas" width="900" height="570" aria-label="Keychain preview"></canvas></div>
+    <div class="sheet-list" id="sheetList"><span class="small">Single keychain selected</span></div>
+    <div class="section">
+      <div class="row">
+        <button id="centerBtn">Center text</button>
+        <button id="resetBtn">Reset design</button>
+      </div>
+      <p class="hint">Preview is a guide, not a physical calibration tool. Confirm all sizes in LightBurn before engraving.</p>
+    </div>
+    <div class="status" id="status">Ready. Changes update the preview automatically.</div>
+  </section>
+</main>
+<input id="projectFile" type="file" accept=".json,application/json" hidden>
+<script>
+(() => {
+'use strict';
+const $ = id => document.getElementById(id);
+const fields = ['width','height','radius','thickness','holeDia','holeOffset','showDimensions','textValue','font','fontSize','textX','textY','letterSpacing','textRotate','bold','logoWidth','logoY','columns','rows','gap','sheetMode'];
+const canvas=$('canvas'), ctx=canvas.getContext('2d');
+let logoData=null, logoType='', logoImage=null, sheetActive=false;
+const num=(id, fallback=0)=>{const v=parseFloat($(id).value);return Number.isFinite(v)?v:fallback};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
+function getState(){const o={};fields.forEach(id=>o[id]=$(id).type==='checkbox'?$(id).checked:$(id).value);o.logoData=logoData;o.logoType=logoType;return o}
+function setState(s){fields.forEach(id=>{if(s[id]!==undefined){if($(id).type==='checkbox')$(id).checked=!!s[id];else $(id).value=s[id]}});logoData=s.logoData||null;logoType=s.logoType||'';logoImage=null;if(logoData){logoImage=new Image();logoImage.onload=render;logoImage.src=logoData;$('logoStatus').textContent='Image loaded'}else $('logoStatus').textContent='No image loaded';sheetActive=false;render()}
+function dims(){return {w:Math.max(10,Math.min(300,num('width',45))),h:Math.max(10,Math.min(300,num('height',30))),r:Math.max(0,num('radius',5)),hole:Math.max(0,num('holeDia',4)),offset:num('holeOffset',6)}}
+function roundRect(c,x,y,w,h,r){r=Math.max(0,Math.min(r,w/2,h/2));c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()}
+function drawPiece(c,x,y,scale,number=null,withDimensions=false){
+ const d=dims(), W=d.w*scale,H=d.h*scale;
+ c.save();c.translate(x,y);
+ c.fillStyle='#fff';c.strokeStyle='#283444';c.lineWidth=Math.max(1,scale*.12);
+ roundRect(c,0,0,W,H,d.r*scale);c.fill();c.stroke();
+ if(d.hole>0){c.beginPath();c.arc(Math.max(d.hole/2+0.5,Math.min(d.w-d.hole/2-0.5,d.offset))*scale,H/2,d.hole*scale/2,0,Math.PI*2);c.fillStyle='#f1f4f8';c.fill();c.stroke()}
+ const lx=num('textX',d.w/2)*scale, ly=num('textY',d.h*.6)*scale, fs=num('fontSize',6)*scale;
+ c.translate(lx,ly);c.rotate(num('textRotate',0)*Math.PI/180);
+ c.font=`${$('bold').checked?'700':'400'} ${fs}px ${$('font').value}`;c.textAlign='center';c.textBaseline='alphabetic';c.fillStyle='#1d2735';
+ c.fillText($('textValue').value||'',0,0);c.restore();
+ if(logoImage&&logoImage.complete){const lw=Math.min(num('logoWidth',10),d.w)*scale,lh=lw*logoImage.height/logoImage.width; c.drawImage(logoImage,x+(d.w*scale-lw)/2,y+num('logoY',9)*scale-lh/2,lw,lh)}
+ if(number!==null){c.save();c.fillStyle='#334155';c.font=`${Math.max(7,scale*2.2)}px Arial`;c.textAlign='right';c.fillText(String(number),x+W-3,y+H-3);c.restore()}
+ if(withDimensions){c.save();c.strokeStyle='#8a94a6';c.fillStyle='#596579';c.lineWidth=1;c.font='12px Arial';c.textAlign='center';c.beginPath();c.moveTo(x,y+H+22);c.lineTo(x+W,y+H+22);c.moveTo(x,y+H+17);c.lineTo(x,y+H+27);c.moveTo(x+W,y+H+17);c.lineTo(x+W,y+H+27);c.stroke();c.fillText(`${d.w} mm`,x+W/2,y+H+39);c.save();c.translate(x-18,y+H/2);c.rotate(-Math.PI/2);c.fillText(`${d.h} mm`,0,0);c.restore();c.restore()}
+}
+function render(){
+ const d=dims(), cols=sheetActive?Math.max(1,Math.min(12,parseInt($('columns').value)||1)):1, rows=sheetActive?Math.max(1,Math.min(12,parseInt($('rows').value)||1)):1, gap=Math.max(0,num('gap',3));
+ const scale=Math.min(12,760/(cols*d.w+(cols-1)*gap),390/(rows*d.h+(rows-1)*gap));
+ canvas.width=900;canvas.height=570;ctx.fillStyle='#fff';ctx.fillRect(0,0,900,570);
+ const sw=cols*d.w+(cols-1)*gap,sh=rows*d.h+(rows-1)*gap,ox=(900-sw*scale)/2,oy=Math.max(24,(570-sh*scale)/2-12);
+ for(let r=0;r<rows;r++)for(let col=0;col<cols;col++)drawPiece(ctx,ox+(col*(d.w+gap))*scale,oy+(r*(d.h+gap))*scale,scale,sheetActive&&$('sheetMode').value==='numbered'?r*cols+col+1:null,!sheetActive&&$('showDimensions').checked);
+ $('previewInfo').textContent=`${d.w} × ${d.h} mm · ${cols*rows} piece${cols*rows===1?'':'s'}`;
+ $('sheetList').innerHTML=sheetActive?`<span class="chip active">${cols} columns × ${rows} rows</span><span class="chip">${sw.toFixed(1)} × ${sh.toFixed(1)} mm sheet</span>`:'<span class="small">Single keychain selected</span>';
+}
+function shapeSVG(x,y,d){return `<rect x="${x}" y="${y}" width="${d.w}" height="${d.h}" rx="${Math.min(d.r,d.w/2,d.h/2)}" ry="${Math.min(d.r,d.w/2,d.h/2)}" fill="none" stroke="#000" stroke-width="0.1"/>`}
+function pieceSVG(x,y,number=null){
+ const d=dims(), holeX=Math.max(d.hole/2+0.5,Math.min(d.w-d.hole/2-0.5,d.offset));
+ let out=shapeSVG(x,y,d);
+ if(d.hole>0)out+=`<circle cx="${x+holeX}" cy="${y+d.h/2}" r="${d.hole/2}" fill="none" stroke="#000" stroke-width="0.1"/>`;
+ const fs=num('fontSize',6), tx=x+num('textX',d.w/2),ty=y+num('textY',18),rot=num('textRotate',0),weight=$('bold').checked?'bold':'normal';
+ // Use explicit font styling; for consistent output in LightBurn, convert text to paths in a vector editor if exact typography is critical.
+ const text=$('textValue').value||'';
+ out+=`<text x="${tx}" y="${ty}" font-family="${esc($('font').value)}" font-size="${fs}" font-weight="${weight}" letter-spacing="${num('letterSpacing',0)}" text-anchor="middle" fill="#000" transform="rotate(${rot} ${tx} ${ty})">${esc(text)}</text>`;
+ if(logoData){if(logoType==='image/svg+xml'||logoData.startsWith('data:image/svg+xml'))out+=`<image href="${logoData}" x="${x+(d.w-num('logoWidth',10))/2}" y="${y+num('logoY',9)-num('logoWidth',10)*0.35}" width="${num('logoWidth',10)}" height="${num('logoWidth',10)*0.7}" preserveAspectRatio="xMidYMid meet"/>`;else out+=`<image href="${logoData}" x="${x+(d.w-num('logoWidth',10))/2}" y="${y+num('logoY',9)-num('logoWidth',10)*0.35}" width="${num('logoWidth',10)}" height="${num('logoWidth',10)*0.7}" preserveAspectRatio="xMidYMid meet"/>`}
+ if(number!==null)out+=`<text x="${x+d.w-2}" y="${y+d.h-2}" font-family="Arial,sans-serif" font-size="2.5" text-anchor="end" fill="#000">${number}</text>`;
+ return out
+}
+function exportSVG(){
+ const d=dims(),cols=sheetActive?Math.max(1,Math.min(12,parseInt($('columns').value)||1)):1,rows=sheetActive?Math.max(1,Math.min(12,parseInt($('rows').value)||1)):1,gap=Math.max(0,num('gap',3)),sw=cols*d.w+(cols-1)*gap,sh=rows*d.h+(rows-1)*gap;
+ let content='';for(let r=0;r<rows;r++)for(let c=0;c<cols;c++)content+=`<g id="keychain-${r*cols+c+1}">${pieceSVG(c*(d.w+gap),r*(d.h+gap),sheetActive&&$('sheetMode').value==='numbered'?r*cols+c+1:null)}</g>`;
+ const svg=`<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${sw}mm" height="${sh}mm" viewBox="0 0 ${sw} ${sh}">\n<title>Keychain Studio export</title>\n<desc>Millimetre-scale keychain layout. Black strokes are outlines and engraving objects.</desc>\n${content}\n</svg>`;
+ const blob=new Blob([svg],{type:'image/svg+xml;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`keychain-${sw.toFixed(1)}x${sh.toFixed(1)}mm.svg`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+ $('status').textContent='SVG exported. Import it into LightBurn and verify the dimensions before running the laser.';
+}
+function saveProject(){const data=JSON.stringify({app:'Keychain Studio',version:1,state:getState(),sheetActive},null,2);const blob=new Blob([data],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='keychain-project.json';a.click();URL.revokeObjectURL(url);$('status').textContent='Project saved as JSON. Keep the file to reopen and edit later.'}
+function openProject(file){const reader=new FileReader();reader.onload=()=>{try{const p=JSON.parse(reader.result);setState(p.state||p);sheetActive=!!p.sheetActive;render();$('status').textContent='Project opened successfully.'}catch(e){$('status').textContent='Could not open this project file. Choose a Keychain Studio JSON project.';$('status').classList.add('error')}};reader.readAsText(file)}
+function reset(){fields.forEach(id=>{const el=$(id);if(el.type==='checkbox')el.checked=el.id==='showDimensions';else if(id==='width')el.value=45;else if(id==='height')el.value=30;else if(id==='radius')el.value=5;else if(id==='thickness')el.value=1;else if(id==='holeDia')el.value=4;else if(id==='holeOffset')el.value=6;else if(id==='textValue')el.value='Your Name';else if(id==='font')el.value='Arial, sans-serif';else if(id==='fontSize')el.value=6;else if(id==='textX')el.value=25;else if(id==='textY')el.value=18;else if(id==='letterSpacing')el.value=0;else if(id==='textRotate')el.value=0;else if(id==='logoWidth')el.value=10;else if(id==='logoY')el.value=9;else if(id==='columns')el.value=3;else if(id==='rows')el.value=3;else if(id==='gap')el.value=3;else if(id==='sheetMode')el.value='individual'});logoData=null;logoImage=null;logoType='';sheetActive=false;$('logoStatus').textContent='No image loaded';render();$('status').textContent='Design reset.'}
+fields.forEach(id=>$(id).addEventListener('input',()=>{if(id==='width')$('textX').max=$(id).value;if(id==='height')$('textY').max=$(id).value;render()}));
+$('logoFile').addEventListener('change',e=>{const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{logoData=reader.result;logoType=file.type||'';logoImage=new Image();logoImage.onload=()=>{render();$('logoStatus').textContent=file.name};logoImage.onerror=()=>{$('status').textContent='Could not preview this image. Try a PNG or SVG file.'};logoImage.src=logoData};reader.readAsDataURL(file)});
+$('removeLogoBtn').onclick=()=>{logoData=null;logoImage=null;logoType='';$('logoFile').value='';$('logoStatus').textContent='No image loaded';render()};
+$('exportBtn').onclick=exportSVG;$('saveBtn').onclick=saveProject;$('openBtn').onclick=()=>$('projectFile').click();$('projectFile').onchange=e=>{if(e.target.files[0])openProject(e.target.files[0]);e.target.value=''};
+$('newBtn').onclick=reset;$('resetBtn').onclick=reset;$('centerBtn').onclick=()=>{$('textX').value=(num('width',45)/2).toString();$('textY').value=(num('height',30)*.62).toString();render()};
+$('sheetBtn').onclick=()=>{sheetActive=true;render();$('status').textContent='Sheet preview created. Export SVG to create the full layout.'};
+render();
+})();
+</script>
+</body>
+</html>
